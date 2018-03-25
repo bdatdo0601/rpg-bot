@@ -21,10 +21,19 @@ async def handleStart(message):
         await client.send_message(message.channel, "Game initialization already in progress")
 
 async def addPlayers(message):
+    if(game_status==-1):
+        await client.send_message(message.channel, "Game in progress")
     if(game_status==0):
         await client.send_message(message.channel, "No active game")
     elif(game_status==1):
-        print(message.author)
+        with open('player_list','r+') as f:
+            json_data = json.load(f)
+            json_data['%s',message.author] = "True"
+            f.seek(0)
+            f.write(json.dumps(json_data))
+            f.truncate()
+
+async def beginGame(message)
 
 async def handleLeaveGame(message):
     if (game_status == 0):
@@ -38,14 +47,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message.content)
-    if message.content == "Start game":
+    if message.content == "!Start game":
         await handleStart(message)
 
-    elif message.content == "entering":
+    elif message.content == "!entering":
         await addPlayers(message)
 
-    elif message.content == "Exit lobby":
+    elif message.content == "!Begin game":
+        await handleBegin(message)
+
+    elif message.content == "!Exit lobby":
        await handleLeaveGame(message)
 
 
